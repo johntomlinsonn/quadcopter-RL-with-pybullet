@@ -1,0 +1,1 @@
+An exploration of reinforcement learning with drones in the gym-pybullet-drones enviorment.
