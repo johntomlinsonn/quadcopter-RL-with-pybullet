@@ -88,6 +88,9 @@ def run(
     target_rpy = np.zeros((num_wp, 3))
     target_z = init_xyzs[0, 2]
     omega = (2.0 * np.pi) / period
+
+    """
+    Figure 8 trajectory
     for i in range(num_wp):
         theta = 2.0 * np.pi * (i / num_wp)
         # Lissajous-style figure-8 centered at (0, 0)
@@ -98,7 +101,22 @@ def run(
             dx_dt = amplitude * np.cos(theta) * omega
             dy_dt = amplitude * np.cos(2.0 * theta) * omega
             target_rpy[i, 2] = np.arctan2(dy_dt, dx_dt)
+    """
 
+    #Rose curve with n amount of petals, centered at (0, 0)
+    petals = 4
+    for i in range(num_wp):
+        theta = 2.0 * np.pi * (i / num_wp)
+        r = amplitude * np.cos(petals * theta)
+        x = r * np.cos(theta)
+        y = r * np.sin(theta)
+        target_pos[i, :] = np.array([x, y, target_z])
+        if yaw_follow:
+            dr_dt = -amplitude * petals * np.sin(petals * theta)
+            dx_dt = dr_dt * np.cos(theta) - r * np.sin(theta)
+            dy_dt = dr_dt * np.sin(theta) + r * np.cos(theta)
+            target_rpy[i, 2] = np.arctan2(dy_dt, dx_dt)
+    
     wp_counter = 0
 
     #### Create the environment ################################
